@@ -1,4 +1,4 @@
-export interface GoogleResponse {
+export interface GoogleRequest {
   email: string;
   firstName: string;
   lastName: string;

@@ -1,8 +1,15 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpStatus,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { Request, Response } from 'express';
-import { GoogleResponse } from './google-res.interface';
+import { AuthPayload } from './auth-payload.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -15,8 +22,19 @@ export class AuthController {
   @Get('/google/callback')
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
-    const googleRes: GoogleResponse = await this.authService.googleLogin(req);
-    console.log(googleRes);
-    res.redirect(`${process.env.CLIENT_URL}/login`);
+    const googleRes: AuthPayload = await this.authService.signWithGoogle(req);
+    // res.redirect(`${process.env.CLIENT_URL}/login`);
+    res.status(HttpStatus.OK).send(googleRes);
+  }
+
+  @Get('/signin')
+  async signin(@Res() res: Response) {
+    res.status(HttpStatus.OK).send(await this.authService.signinWithEmail());
+  }
+
+  @Get('/test')
+  @UseGuards(AuthGuard('jwt'))
+  async test(@Res() res: Response) {
+    res.status(HttpStatus.OK).send('success');
   }
 }

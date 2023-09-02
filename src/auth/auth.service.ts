@@ -13,7 +13,7 @@ export class AuthService {
   ) {}
 
   async signWithGoogle(req): Promise<AuthPayload> {
-    let gReq: GoogleRequest = req.user;
+    const gReq: GoogleRequest = req.user;
 
     if (!gReq) {
       return null;

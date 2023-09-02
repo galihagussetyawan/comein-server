@@ -24,7 +24,11 @@ export class AuthController {
   async googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
     const googleRes: AuthPayload = await this.authService.signWithGoogle(req);
     // res.redirect(`${process.env.CLIENT_URL}/login`);
-    res.status(HttpStatus.OK).send(googleRes);
+    try {
+      res.status(HttpStatus.OK).send(googleRes);
+    } catch (error) {
+      res.status(error.status).send(error.message);
+    }
   }
 
   @Get('/signin')

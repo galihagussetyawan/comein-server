@@ -2,10 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { GoogleRequest } from './google-req.interface';
 import { JwtService } from '@nestjs/jwt';
 import { AuthPayload } from './auth-payload.interface';
+import { UserService } from 'src/user/user.service';
+import { User } from 'src/user/user.entity';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly userService: UserService,
+  ) {}
 
   async signWithGoogle(req): Promise<AuthPayload> {
     let gReq: GoogleRequest = req.user;
@@ -14,7 +19,16 @@ export class AuthService {
       return null;
     }
 
-    return await this.getAuthPayload('asdasd', gReq.email, null);
+    const user: User = new User();
+    user.email = gReq.email;
+    user.firstName = gReq.firstName;
+    user.lastName = gReq.lastName;
+    user.displayName = gReq.displayName;
+    user.picture = gReq.picture;
+    user.verified = gReq.verified;
+
+    const resUser: User = await this.userService.createUser(user);
+    return await this.getAuthPayload(resUser.id, resUser.email, resUser.roles);
   }
 
   async signinWithEmail(): Promise<AuthPayload> {

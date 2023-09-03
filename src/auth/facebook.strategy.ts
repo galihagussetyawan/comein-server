@@ -17,6 +17,7 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
         'pages_read_user_content',
         'pages_read_engagement',
         'read_insights',
+        'instagram_basic',
         'instagram_manage_insights',
         'business_management',
         'ads_management',

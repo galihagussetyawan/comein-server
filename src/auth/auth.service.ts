@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthPayload } from './auth-payload.interface';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/user.entity';
+import { Request } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -29,6 +30,10 @@ export class AuthService {
 
     const resUser: User = await this.userService.createUser(user);
     return await this.getAuthPayload(resUser.id, resUser.email, resUser.roles);
+  }
+
+  async signWithFacebook(req: Request) {
+    return req.user;
   }
 
   async signinWithEmail(): Promise<AuthPayload> {

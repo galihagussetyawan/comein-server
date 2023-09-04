@@ -83,6 +83,7 @@ export class AuthService {
       name,
       username,
       profilePicture,
+      accessToken,
     };
   }
 }

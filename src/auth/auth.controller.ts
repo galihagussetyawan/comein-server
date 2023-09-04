@@ -39,7 +39,18 @@ export class AuthController {
   @Get('/facebook/callback')
   @UseGuards(AuthGuard('facebook'))
   async facebookAuthRedirect(@Req() req: Request, @Res() res: Response) {
-    res.status(200).json(await this.authService.signWithFacebook(req));
+    try {
+      const result = await this.authService.signWithFacebook(req);
+      res.redirect(
+        `${
+          process.env.CLIENT_URL
+        }/dashboard?open=instagram&step=4&data_instagram=${JSON.stringify(
+          result,
+        )}`,
+      );
+    } catch (error) {
+      res.redirect(`${process.env.CLIENT_URL}/login`);
+    }
   }
 
   @Get('/signin')

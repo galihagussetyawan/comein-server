@@ -4,7 +4,6 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthPayload } from './auth-payload.interface';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/user.entity';
-import { Request } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -29,34 +28,32 @@ export class AuthService {
     user.verified = gReq.verified;
 
     const resUser: User = await this.userService.createUser(user);
-    return await this.getAuthPayload(resUser.id, resUser.email, resUser.roles);
+    return await this.getAuthPayload(resUser.id, resUser.roles);
   }
 
-  async signWithFacebook(req: Request) {
-    return req.user;
+  async signWithFacebook(req) {
+    if (!req.user) {
+      return null;
+    }
+
+    return await this.fetchRetriveInstagramId(req.user.accessToken);
   }
 
   async signinWithEmail(): Promise<AuthPayload> {
-    return await this.getAuthPayload('id-secret', 'galih@gmail.com', ['user']);
+    return await this.getAuthPayload('id-secret', null);
   }
 
-  async getAuthPayload(
-    id: string,
-    email: string,
-    roles: string[],
-  ): Promise<AuthPayload> {
+  async getAuthPayload(id: string, roles: string[]): Promise<AuthPayload> {
     return {
       id,
-      email,
-      accessToken: await this.createToken(id, email, roles),
+      accessToken: await this.createToken(id, roles),
     };
   }
 
-  async createToken(userId: string, email: string, roles: string[]) {
+  async createToken(userId: string, roles: string[]) {
     return await this.jwtService.signAsync(
       {
         sub: userId,
-        email,
         roles,
       },
       {
@@ -64,5 +61,28 @@ export class AuthService {
         expiresIn: `${3 * 30}d`,
       },
     );
+  }
+
+  /*
+  fetch from META-API
+  to get ID and username instagram
+  */
+  async fetchRetriveInstagramId(accessToken: string) {
+    const res = await fetch(
+      `${process.env.META_URL}/${process.env.META_VERSION}/me/accounts?fields=name,id,access_token,instagram_business_account{id,username,name,profile_picture_url}&access_token=${accessToken}`,
+    );
+    const accounts = await res.json();
+    const id = accounts?.data[0]?.instagram_business_account?.id;
+    const name = accounts?.data[0]?.instagram_business_account?.name;
+    const username = accounts?.data[0]?.instagram_business_account?.username;
+    const profilePicture =
+      accounts?.data[0]?.instagram_business_account?.profile_picture_url;
+
+    return {
+      id,
+      name,
+      username,
+      profilePicture,
+    };
   }
 }

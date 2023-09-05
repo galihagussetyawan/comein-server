@@ -40,7 +40,10 @@ export class AuthService {
   }
 
   async signinWithEmail(): Promise<AuthPayload> {
-    return await this.getAuthPayload('id-secret', null);
+    return await this.getAuthPayload(
+      '22266966-0488-4fda-a102-58dbe8b9a59a',
+      null,
+    );
   }
 
   async getAuthPayload(id: string, roles: string[]): Promise<AuthPayload> {

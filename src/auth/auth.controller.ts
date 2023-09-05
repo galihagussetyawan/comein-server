@@ -41,6 +41,8 @@ export class AuthController {
   async facebookAuthRedirect(@Req() req: Request, @Res() res: Response) {
     try {
       const result = await this.authService.signWithFacebook(req);
+      console.log(result);
+
       res.redirect(
         `${
           process.env.CLIENT_URL

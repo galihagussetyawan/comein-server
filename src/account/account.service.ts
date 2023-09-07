@@ -43,6 +43,16 @@ export class AccountService {
     return resAccount;
   }
 
+  async getAccount(id: string) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: {
+        account: true,
+      },
+    });
+    return user.account;
+  }
+
   async getAccountByAccountId(accountId: string) {
     return await this.accountRepository.findOneBy({ accountId });
   }

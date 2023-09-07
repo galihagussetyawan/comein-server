@@ -5,10 +5,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Account } from './account.entity';
 import { JwtStrategy } from 'src/auth/jwt.strategy';
 import { User } from 'src/user/user.entity';
+import { InstagramService } from './instagram.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Account, User])],
-  providers: [AccountService, JwtStrategy],
+  providers: [AccountService, JwtStrategy, InstagramService],
   controllers: [AccountController],
   exports: [TypeOrmModule, AccountService],
 })

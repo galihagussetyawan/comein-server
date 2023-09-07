@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpStatus,
   Post,
   Req,
@@ -11,6 +12,7 @@ import { AccountService } from './account.service';
 import { AuthGuard } from '@nestjs/passport';
 import { PrincipalDecorator } from 'src/auth/principal.decorator';
 import { Request, Response } from 'express';
+import { InstagramService } from './instagram.service';
 
 interface AccountReqBody {
   accountId: string;
@@ -22,7 +24,10 @@ interface AccountReqBody {
 
 @Controller('account')
 export class AccountController {
-  constructor(private readonly accountService: AccountService) {}
+  constructor(
+    private readonly accountService: AccountService,
+    private readonly instagramService: InstagramService,
+  ) {}
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
@@ -49,6 +54,37 @@ export class AccountController {
       res.status(error.status).send({
         status: error.status,
         message: error.message,
+      });
+    }
+  }
+
+  @Get()
+  @UseGuards(AuthGuard('jwt'))
+  async getAccount(@PrincipalDecorator() principal: any) {
+    return await this.accountService.getAccount(principal.sub);
+  }
+
+  @Get('/instagram/insights/profile')
+  @UseGuards(AuthGuard('jwt'))
+  async getInsightInstagramAccount(
+    @PrincipalDecorator() principal: any,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    try {
+      res.status(HttpStatus.OK).send({
+        status: HttpStatus.OK,
+        message: 'success get insights',
+        data: await this.instagramService.getProfileInsights(
+          principal.sub,
+          req.query['since'] ? req.query['since'].toString() : null,
+          req.query['until'] ? req.query['until'].toString() : null,
+        ),
+      });
+    } catch (error) {
+      res.status(error?.status).send({
+        status: error?.status,
+        message: error?.message,
       });
     }
   }

@@ -4,7 +4,7 @@ export interface InstagramMediaResponse {
 }
 
 interface Media {
-  media_product_type: string;
+  media_type: string;
   timestamp: string;
   insights: Insights;
   caption: string;

@@ -113,4 +113,28 @@ export class AccountController {
       });
     }
   }
+
+  @Get('/instagram/search')
+  @UseGuards(AuthGuard('jwt'))
+  async getInstagramProfileByUsername(
+    @PrincipalDecorator() principal: any,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    try {
+      res.status(HttpStatus.OK).send({
+        status: HttpStatus.OK,
+        message: 'success get media insights',
+        data: await this.instagramService.getProfileByUsername(
+          principal.sub,
+          req.query['q'] ? req.query['q'].toString() : null,
+        ),
+      });
+    } catch (error) {
+      res.status(error.status).send({
+        status: error.status,
+        message: error.message,
+      });
+    }
+  }
 }

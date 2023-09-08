@@ -15,7 +15,7 @@ export class InstagramService {
     const accessToken = resAccount.token;
 
     const res = await fetch(
-      `${process.env.META_URL}/${process.env.META_VERSION}/${accountId}?fields=id,username,followers_count,follows_count,media_count,insights.metric(reach,profile_views,impressions,website_clicks).period(day)&period=day&access_token=${accessToken}`,
+      `${process.env.META_URL}/${process.env.META_VERSION}/${accountId}?fields=id,username,followers_count,follows_count,media_count,insights.since(${since}).until(${until}).metric(reach,profile_views,impressions,website_clicks).period(day)&access_token=${accessToken}`,
     );
 
     const resJson = await res.json();

@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { AccountService } from './account.service';
+import { InstagramMediaResponse } from './instagram-media-res.interface';
 
 @Injectable()
 export class InstagramService {
@@ -22,6 +23,27 @@ export class InstagramService {
       throw new BadRequestException(resJson.error.message);
     }
 
+    return resJson;
+  }
+
+  async getMediaInsights(
+    id: string,
+    since: string,
+    until: string,
+  ): Promise<InstagramMediaResponse> {
+    if (!since || !until) {
+      throw new BadRequestException('required query since and until date');
+    }
+
+    const resAccount = await this.accountService.getAccount(id);
+    const accountId = resAccount.accountId;
+    const accessToken = resAccount.token;
+
+    const res = await fetch(
+      `${process.env.META_URL}/${process.env.META_VERSION}/${accountId}/media?fields=media_product_type,timestamp,caption,insights.metric(engagement,impressions,reach)&since=${since}&until=${until}&access_token=${accessToken}`,
+    );
+
+    const resJson = res.json();
     return resJson;
   }
 }

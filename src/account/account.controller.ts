@@ -88,4 +88,29 @@ export class AccountController {
       });
     }
   }
+
+  @Get('/instagram/insights/media')
+  @UseGuards(AuthGuard('jwt'))
+  async getInstagramMediaInsights(
+    @PrincipalDecorator() principal: any,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    try {
+      res.status(HttpStatus.OK).send({
+        status: HttpStatus.OK,
+        message: 'success get media insights',
+        data: await this.instagramService.getMediaInsights(
+          principal.sub,
+          req.query['since'] ? req.query['since'].toString() : null,
+          req.query['until'] ? req.query['until'].toString() : null,
+        ),
+      });
+    } catch (error) {
+      res.status(error.status).send({
+        status: error.status,
+        message: error.message,
+      });
+    }
+  }
 }

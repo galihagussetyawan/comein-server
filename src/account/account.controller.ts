@@ -60,8 +60,19 @@ export class AccountController {
 
   @Get()
   @UseGuards(AuthGuard('jwt'))
-  async getAccount(@PrincipalDecorator() principal: any) {
-    return await this.accountService.getAccount(principal.sub);
+  async getAccount(@PrincipalDecorator() principal: any, @Res() res: Response) {
+    try {
+      res.status(HttpStatus.OK).send({
+        status: HttpStatus.OK,
+        message: 'success get account',
+        data: await this.accountService.getAccount(principal.sub),
+      });
+    } catch (error) {
+      res.status(error?.status).send({
+        status: error?.status,
+        message: error?.message,
+      });
+    }
   }
 
   @Get('/instagram/insights/profile')

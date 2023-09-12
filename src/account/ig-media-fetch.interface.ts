@@ -1,4 +1,4 @@
-export interface InstagramMediaResponse {
+export interface IGMediaFetch {
   data: Media;
   paging: Paging;
 }
@@ -15,7 +15,7 @@ interface Insights {
   data: Insight;
 }
 
-interface Insight {
+export interface Insight {
   name: string;
   period: string;
   values: Value[];

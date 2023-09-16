@@ -18,8 +18,6 @@ export interface Insight {
   values: Value[];
   title: string;
   total_value: number;
-  since: string;
-  until: string;
 }
 
 interface Value {

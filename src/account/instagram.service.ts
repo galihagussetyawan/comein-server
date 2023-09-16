@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { IGMediaFetch } from './ig-media-fetch.interface';
-import { Insight, IGProfileRes } from './ig-profile-res.interface';
 import { IGProfileFetch } from './ig-profile-fetch-interface';
+import { IGProfileRes, Insight } from './ig-profile-res.interface';
 
 @Injectable()
 export class InstagramService {
@@ -34,8 +34,6 @@ export class InstagramService {
         total_value: data.values
           .map((v) => v.value)
           .reduce((total, amount) => total + amount),
-        since: data.values[0].end_time,
-        until: data.values[data.values.length - 1].end_time,
       };
     });
 

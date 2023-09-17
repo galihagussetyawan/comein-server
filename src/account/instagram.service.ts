@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { decryption } from 'src/utilities/encryption';
 import { AccountService } from './account.service';
 import { IGMediaFetch } from './ig-media-fetch.interface';
 import { IGProfileFetch } from './ig-profile-fetch-interface';
@@ -14,7 +15,7 @@ export class InstagramService {
 
     const resAccount = await this.accountService.getAccount(id);
     const accountId = resAccount.accountId;
-    const accessToken = resAccount.token;
+    const accessToken = decryption(resAccount.token);
 
     const res = await fetch(
       `${process.env.META_URL}/${process.env.META_VERSION}/${accountId}?fields=id,username,followers_count,follows_count,media_count,insights.since(${since}).until(${until}).metric(reach,profile_views,impressions,website_clicks).period(day)&access_token=${accessToken}`,
@@ -63,7 +64,7 @@ export class InstagramService {
 
     const resAccount = await this.accountService.getAccount(id);
     const accountId = resAccount.accountId;
-    const accessToken = resAccount.token;
+    const accessToken = decryption(resAccount.token);
 
     const res = await fetch(
       `${process.env.META_URL}/${process.env.META_VERSION}/${accountId}/media?fields=media_type,timestamp,caption,insights.metric(engagement,impressions,reach)&since=${since}&until=${until}&access_token=${accessToken}`,
@@ -80,7 +81,7 @@ export class InstagramService {
 
     const resAccount = await this.accountService.getAccount(id);
     const accountId = resAccount.accountId;
-    const accessToken = resAccount.token;
+    const accessToken = decryption(resAccount.token);
 
     const res = await fetch(
       `${process.env.META_URL}/${process.env.META_VERSION}/${accountId}?fields=business_discovery.username(${qUsername}){id,username,name,profile_picture_url,followers_count,media_count,media.limit(1){id,like_count,comments_count,media_type,timestamp,caption,permalink}}&access_token=${accessToken}`,

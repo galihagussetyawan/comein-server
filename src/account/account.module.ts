@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { AccountService } from './account.service';
-import { AccountController } from './account.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Account } from './account.entity';
 import { JwtStrategy } from 'src/auth/jwt.strategy';
 import { User } from 'src/user/user.entity';
+import { AccountController } from './account.controller';
+import { Account } from './account.entity';
+import { AccountService } from './account.service';
 import { InstagramService } from './instagram.service';
 
 @Module({

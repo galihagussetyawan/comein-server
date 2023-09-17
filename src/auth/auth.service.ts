@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { GoogleRequest } from './google-req.interface';
 import { JwtService } from '@nestjs/jwt';
-import { AuthPayload } from './auth-payload.interface';
-import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/user.entity';
+import { UserService } from 'src/user/user.service';
+import { encryption } from 'src/utilities/encryption';
+import { AuthPayload } from './auth-payload.interface';
+import { GoogleRequest } from './google-req.interface';
 
 @Injectable()
 export class AuthService {
@@ -86,7 +87,7 @@ export class AuthService {
       name,
       username,
       profilePicture,
-      accessToken,
+      accessToken: encryption(accessToken),
     };
   }
 }

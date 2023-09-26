@@ -67,7 +67,7 @@ export class InstagramService {
     const accessToken = decryption(resAccount.token);
 
     const res = await fetch(
-      `${process.env.META_URL}/${process.env.META_VERSION}/${accountId}/media?fields=media_type,timestamp,caption,like_count,comments_count,insights.metric(engagement,impressions,reach)&since=${since}&until=${until}&access_token=${accessToken}`,
+      `${process.env.META_URL}/${process.env.META_VERSION}/${accountId}/media?fields=media_type,media_product_type,timestamp,caption,like_count,comments_count,insights.metric(engagement,impressions,reach)&since=${since}&until=${until}&access_token=${accessToken}`,
     );
 
     const resJson = res.json();

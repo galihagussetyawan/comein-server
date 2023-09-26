@@ -8,10 +8,10 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { AccountService } from './account.service';
 import { AuthGuard } from '@nestjs/passport';
-import { PrincipalDecorator } from 'src/auth/principal.decorator';
 import { Request, Response } from 'express';
+import { PrincipalDecorator } from 'src/auth/principal.decorator';
+import { AccountService } from './account.service';
 import { InstagramService } from './instagram.service';
 
 interface AccountReqBody {

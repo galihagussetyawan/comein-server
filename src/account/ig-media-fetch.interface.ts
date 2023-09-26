@@ -5,6 +5,7 @@ export interface IGMediaFetch {
 
 interface Media {
   media_type: string;
+  media_product_type: string;
   timestamp: string;
   insights: Insights;
   caption: string;

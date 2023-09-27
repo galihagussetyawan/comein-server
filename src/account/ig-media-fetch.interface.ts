@@ -7,6 +7,7 @@ interface Media {
   media_type: string;
   media_product_type: string;
   timestamp: string;
+  permalink: string;
   insights: Insights;
   caption: string;
   id: string;

@@ -49,9 +49,7 @@ export class AuthController {
       res.redirect(
         `${
           process.env.CLIENT_URL
-        }/dashboard?open=instagram&step=4&data_instagram=${JSON.stringify(
-          result,
-        )}`,
+        }/dashboard/account?open=ig&step=3&data=${JSON.stringify(result)}`,
       );
     } catch (error) {
       res.redirect(`${process.env.CLIENT_URL}/login`);

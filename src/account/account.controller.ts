@@ -183,4 +183,24 @@ export class AccountController {
       });
     }
   }
+
+  @Get('/competitor')
+  @UseGuards(AuthGuard('jwt'))
+  async getCompetitorsAccount(
+    @PrincipalDecorator() principal: any,
+    @Res() res: Response,
+  ) {
+    try {
+      res.status(HttpStatus.OK).send({
+        status: HttpStatus.OK,
+        message: 'success get competitors',
+        data: await this.accountService.getCompetitorsByUserId(principal?.sub),
+      });
+    } catch (error) {
+      res.status(error.status).send({
+        status: error.status,
+        message: error.message,
+      });
+    }
+  }
 }

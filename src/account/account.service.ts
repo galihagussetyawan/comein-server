@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
@@ -78,5 +78,21 @@ export class AccountService {
 
     const resCompetitor = await this.competitorRepository.save(competitor);
     return resCompetitor;
+  }
+
+  async getCompetitorsByUserId(id: string) {
+    try {
+      const competitors = await this.competitorRepository.find({
+        where: {
+          user: {
+            id: 'asdasd',
+          },
+        },
+      });
+
+      return competitors;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 }

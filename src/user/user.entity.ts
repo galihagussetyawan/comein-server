@@ -1,8 +1,10 @@
 import { Account } from 'src/account/account.entity';
+import { Competitor } from 'src/account/competitor.entity';
 import {
   Column,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -47,6 +49,9 @@ export class User {
   @OneToOne(() => Account)
   @JoinColumn()
   account: Account;
+
+  @OneToMany(() => Competitor, (competitor) => competitor.user)
+  competitors: Competitor[];
 
   @Column({
     name: 'created_at',

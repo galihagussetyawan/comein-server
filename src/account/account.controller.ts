@@ -22,6 +22,13 @@ interface AccountReqBody {
   accessToken: string;
 }
 
+interface CompetitorReqBody {
+  accountId: string;
+  name: string;
+  username: string;
+  profilePicture: string;
+}
+
 @Controller('account')
 export class AccountController {
   constructor(
@@ -140,6 +147,33 @@ export class AccountController {
           principal.sub,
           req.query['q'] ? req.query['q'].toString() : null,
           req.query['fields'] ? req.query['fields'].toString() : null,
+        ),
+      });
+    } catch (error) {
+      res.status(error.status).send({
+        status: error.status,
+        message: error.message,
+      });
+    }
+  }
+
+  @Post('/competitor')
+  @UseGuards(AuthGuard('jwt'))
+  async addCompetitorAccount(
+    @PrincipalDecorator() principal: any,
+    @Body() reqBody: CompetitorReqBody,
+    @Res() res: Response,
+  ) {
+    try {
+      res.status(HttpStatus.OK).send({
+        status: HttpStatus.OK,
+        message: 'success add your competitor',
+        data: await this.accountService.addCompetitorAccount(
+          principal?.sub,
+          reqBody.accountId,
+          reqBody.name,
+          reqBody.username,
+          reqBody.profilePicture,
         ),
       });
     } catch (error) {

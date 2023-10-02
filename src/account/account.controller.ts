@@ -125,7 +125,7 @@ export class AccountController {
     }
   }
 
-  @Get('/instagram/search')
+  @Get('/instagram')
   @UseGuards(AuthGuard('jwt'))
   async getInstagramProfileByUsername(
     @PrincipalDecorator() principal: any,
@@ -136,9 +136,10 @@ export class AccountController {
       res.status(HttpStatus.OK).send({
         status: HttpStatus.OK,
         message: 'success get media insights',
-        data: await this.instagramService.getProfileByUsername(
+        data: await this.instagramService.getProfileAndFieldsByUsername(
           principal.sub,
           req.query['q'] ? req.query['q'].toString() : null,
+          req.query['fields'] ? req.query['fields'].toString() : null,
         ),
       });
     } catch (error) {

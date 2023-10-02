@@ -74,7 +74,37 @@ export class InstagramService {
     return resJson;
   }
 
-  async getProfileByUsername(id: string, qUsername: string) {
+  async getProfileAndFieldsByUsername(
+    id: string,
+    qUsername: string,
+    fields: string,
+  ) {
+    if (!qUsername) {
+      throw new BadRequestException('required query username');
+    }
+
+    if (qUsername && fields === 'data') {
+      return await this.getProfileDataByUsername(id, qUsername);
+    } else {
+      const resAccount = await this.accountService.getAccount(id);
+      const accountId = resAccount.accountId;
+      const accessToken = decryption(resAccount.token);
+
+      const res = await fetch(
+        `${process.env.META_URL}/${process.env.META_VERSION}/${accountId}?fields=business_discovery.username(${qUsername}){id,username,name,profile_picture_url}&access_token=${accessToken}`,
+      );
+
+      const resJson = await res.json();
+
+      if (resJson.error) {
+        throw new BadRequestException(resJson.error.error_user_msg);
+      }
+
+      return resJson;
+    }
+  }
+
+  async getProfileDataByUsername(id: string, qUsername: string) {
     if (!qUsername) {
       throw new BadRequestException('required query username');
     }
@@ -84,7 +114,7 @@ export class InstagramService {
     const accessToken = decryption(resAccount.token);
 
     const res = await fetch(
-      `${process.env.META_URL}/${process.env.META_VERSION}/${accountId}?fields=business_discovery.username(${qUsername}){id,username,name,profile_picture_url,followers_count,media_count,media.limit(1){id,like_count,comments_count,media_type,timestamp,caption,permalink}}&access_token=${accessToken}`,
+      `${process.env.META_URL}/${process.env.META_VERSION}/${accountId}?fields=business_discovery.username(${qUsername}){id,username,name,profile_picture_url,followers_count,media_count,media.limit(90){id,like_count,comments_count,media_type,timestamp,caption,permalink}}&access_token=${accessToken}`,
     );
 
     const resJson = await res.json();

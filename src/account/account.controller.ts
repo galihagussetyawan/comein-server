@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Post,
@@ -195,6 +196,24 @@ export class AccountController {
         status: HttpStatus.OK,
         message: 'success get competitors',
         data: await this.accountService.getCompetitorsByUserId(principal?.sub),
+      });
+    } catch (error) {
+      res.status(error.status).send({
+        status: error.status,
+        message: error.message,
+      });
+    }
+  }
+
+  @Delete('/competitor')
+  async deleteCompetitor(@Req() req: Request, @Res() res: Response) {
+    try {
+      res.status(HttpStatus.OK).send({
+        status: HttpStatus.OK,
+        message: 'success delete competitor',
+        data: await this.accountService.deleteCompetitor(
+          req?.query['id']?.toString(),
+        ),
       });
     } catch (error) {
       res.status(error.status).send({

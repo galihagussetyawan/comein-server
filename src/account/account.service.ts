@@ -95,4 +95,26 @@ export class AccountService {
       throw new BadRequestException(error);
     }
   }
+
+  async deleteCompetitor(competitorId: string) {
+    try {
+      if (!competitorId) {
+        throw new BadRequestException('required query id');
+      }
+
+      const competitor = await this.competitorRepository.findOneBy({
+        id: competitorId,
+      });
+
+      if (!competitor) {
+        throw new BadRequestException(
+          'some Entities not found, no changes applied!',
+        );
+      }
+
+      await this.competitorRepository.delete(competitorId);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
 }

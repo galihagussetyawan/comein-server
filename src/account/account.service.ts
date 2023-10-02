@@ -85,7 +85,7 @@ export class AccountService {
       const competitors = await this.competitorRepository.find({
         where: {
           user: {
-            id: 'asdasd',
+            id,
           },
         },
       });

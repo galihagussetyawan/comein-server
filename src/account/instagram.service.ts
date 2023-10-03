@@ -14,8 +14,12 @@ export class InstagramService {
     }
 
     const resAccount = await this.accountService.getAccount(id);
-    const accountId = resAccount.accountId;
-    const accessToken = decryption(resAccount.token);
+    const accountId = resAccount?.accountId;
+    const accessToken = decryption(resAccount?.token);
+
+    if (!accountId) {
+      throw new BadRequestException('not found account connected');
+    }
 
     const res = await fetch(
       `${process.env.META_URL}/${process.env.META_VERSION}/${accountId}?fields=id,username,followers_count,follows_count,media_count,insights.since(${since}).until(${until}).metric(reach,profile_views,impressions,website_clicks).period(day)&access_token=${accessToken}`,
@@ -63,14 +67,18 @@ export class InstagramService {
     }
 
     const resAccount = await this.accountService.getAccount(id);
-    const accountId = resAccount.accountId;
-    const accessToken = decryption(resAccount.token);
+    const accountId = resAccount?.accountId;
+    const accessToken = decryption(resAccount?.token);
+
+    if (!accountId) {
+      throw new BadRequestException('not found account connected');
+    }
 
     const res = await fetch(
       `${process.env.META_URL}/${process.env.META_VERSION}/${accountId}/media?fields=media_type,media_product_type,timestamp,caption,like_count,comments_count,permalink,insights.metric(engagement,impressions,reach,saved,shares)&since=${since}&until=${until}&access_token=${accessToken}`,
     );
 
-    const resJson = res.json();
+    const resJson = res?.json();
     return resJson;
   }
 
@@ -87,8 +95,12 @@ export class InstagramService {
       return await this.getProfileDataByUsername(id, qUsername);
     } else {
       const resAccount = await this.accountService.getAccount(id);
-      const accountId = resAccount.accountId;
-      const accessToken = decryption(resAccount.token);
+      const accountId = resAccount?.accountId;
+      const accessToken = decryption(resAccount?.token);
+
+      if (!accountId) {
+        throw new BadRequestException('not found account connected');
+      }
 
       const res = await fetch(
         `${process.env.META_URL}/${process.env.META_VERSION}/${accountId}?fields=business_discovery.username(${qUsername}){id,username,name,profile_picture_url}&access_token=${accessToken}`,
@@ -110,8 +122,12 @@ export class InstagramService {
     }
 
     const resAccount = await this.accountService.getAccount(id);
-    const accountId = resAccount.accountId;
-    const accessToken = decryption(resAccount.token);
+    const accountId = resAccount?.accountId;
+    const accessToken = decryption(resAccount?.token);
+
+    if (!accountId) {
+      throw new BadRequestException('not found account connected');
+    }
 
     const res = await fetch(
       `${process.env.META_URL}/${process.env.META_VERSION}/${accountId}?fields=business_discovery.username(${qUsername}){id,username,name,profile_picture_url,followers_count,media_count,media.limit(90){id,like_count,comments_count,media_type,timestamp,caption,permalink}}&access_token=${accessToken}`,

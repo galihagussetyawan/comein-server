@@ -206,6 +206,7 @@ export class AccountController {
   }
 
   @Delete('/competitor')
+  @UseGuards(AuthGuard('jwt'))
   async deleteCompetitor(@Req() req: Request, @Res() res: Response) {
     try {
       res.status(HttpStatus.OK).send({

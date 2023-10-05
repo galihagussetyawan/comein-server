@@ -247,4 +247,29 @@ export class AccountController {
       });
     }
   }
+
+  @Get('/instagram/audience/online')
+  @UseGuards(AuthGuard('jwt'))
+  async getOnlineAudienceHistory(
+    @PrincipalDecorator() principal: any,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    try {
+      res.status(HttpStatus.OK).send({
+        status: HttpStatus.OK,
+        message: 'success get online audience history',
+        data: await this.instagramService.getOnlineAudienceHistory(
+          principal.sub,
+          req?.query['since']?.toString(),
+          req?.query['until']?.toString(),
+        ),
+      });
+    } catch (error) {
+      res.status(error?.status).send({
+        status: error?.status,
+        message: error?.message,
+      });
+    }
+  }
 }

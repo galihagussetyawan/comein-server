@@ -165,6 +165,29 @@ export class InstagramService {
     if (resJson?.error) {
       throw new BadRequestException(resJson?.error?.message);
     }
+  }
+
+  async getOnlineAudienceHistory(userId: string, since: string, until: string) {
+    if (!since || !until) {
+      throw new BadRequestException('required query since and until date');
+    }
+
+    const resAccount = await this.accountService.getAccount(userId);
+    const accountId = resAccount?.accountId;
+    const accessToken = decryption(resAccount?.token);
+
+    if (!accountId) {
+      throw new BadRequestException('not found account connected');
+    }
+
+    const res = await fetch(
+      `${process.env.META_URL}/${process.env.META_VERSION}/${accountId}/insights?metric=online_followers&period=lifetime&since=${since}&until=${until}&access_token=${accessToken}`,
+    );
+
+    const resJson = await res?.json();
+    if (resJson?.error) {
+      throw new BadRequestException(resJson?.error?.message);
+    }
 
     return resJson;
   }

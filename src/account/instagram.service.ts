@@ -141,4 +141,31 @@ export class InstagramService {
 
     return resJson;
   }
+
+  async getAudienceInsights(userId: string, breakdown: string) {
+    if (!breakdown) {
+      throw new BadRequestException(
+        'required breakdown: age, gender, city, country',
+      );
+    }
+
+    const resAccount = await this.accountService.getAccount(userId);
+    const accountId = resAccount?.accountId;
+    const accessToken = decryption(resAccount?.token);
+
+    if (!accountId) {
+      throw new BadRequestException('not found account connected');
+    }
+
+    const res = await fetch(
+      `${process.env.META_URL}/${process.env.META_VERSION}/${accountId}/insights?metric=follower_demographics&period=lifetime&timeframe=last_30_days&breakdown=${breakdown}&metric_type=total_value&access_token=${accessToken}`,
+    );
+
+    const resJson = await res?.json();
+    if (resJson?.error) {
+      throw new BadRequestException(resJson?.error?.message);
+    }
+
+    return resJson;
+  }
 }

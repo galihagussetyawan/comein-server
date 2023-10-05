@@ -223,4 +223,28 @@ export class AccountController {
       });
     }
   }
+
+  @Get('/instagram/audience')
+  @UseGuards(AuthGuard('jwt'))
+  async getAudienceInsights(
+    @PrincipalDecorator() principal: any,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    try {
+      res.status(HttpStatus.OK).send({
+        status: HttpStatus.OK,
+        message: 'success get audience insights',
+        data: await this.instagramService.getAudienceInsights(
+          principal.sub,
+          req?.query['breakdown']?.toString(),
+        ),
+      });
+    } catch (error) {
+      res.status(error.status).send({
+        status: error.status,
+        message: error.message,
+      });
+    }
+  }
 }

@@ -4,6 +4,7 @@ import { AccountService } from './account.service';
 import { IGMediaFetch } from './ig-media-fetch.interface';
 import { IGProfileFetch } from './ig-profile-fetch-interface';
 import { IGProfileRes, Insight } from './ig-profile-res.interface';
+import { IGAudienceOnlineFetch } from './ig-audience-online-fetch.interface';
 
 @Injectable()
 export class InstagramService {
@@ -184,7 +185,7 @@ export class InstagramService {
       `${process.env.META_URL}/${process.env.META_VERSION}/${accountId}/insights?metric=online_followers&period=lifetime&since=${since}&until=${until}&access_token=${accessToken}`,
     );
 
-    const resJson = await res?.json();
+    const resJson: IGAudienceOnlineFetch = await res?.json();
     if (resJson?.error) {
       throw new BadRequestException(resJson?.error?.message);
     }

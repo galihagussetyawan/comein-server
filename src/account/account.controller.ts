@@ -272,4 +272,28 @@ export class AccountController {
       });
     }
   }
+
+  @Get('/instagram/audience/demographics')
+  @UseGuards(AuthGuard('jwt'))
+  async getFollowerDemographics(
+    @PrincipalDecorator() principal: any,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    try {
+      res.status(HttpStatus.OK).send({
+        status: HttpStatus.OK,
+        message: 'success get follower demographics',
+        data: await this.instagramService.getFollowerDemographics(
+          principal?.sub,
+          req?.query['breakdown']?.toString(),
+        ),
+      });
+    } catch (error) {
+      res.status(error?.status).send({
+        status: error?.status,
+        message: error?.message,
+      });
+    }
+  }
 }

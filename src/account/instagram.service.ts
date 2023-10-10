@@ -5,6 +5,7 @@ import { IGMediaFetch } from './ig-media-fetch.interface';
 import { IGProfileFetch } from './ig-profile-fetch-interface';
 import { IGProfileRes, Insight } from './ig-profile-res.interface';
 import { IGAudienceOnlineFetch } from './ig-audience-online-fetch.interface';
+import { IGAudienceDemographicsFetch } from './ig-audience-demographics-fetch.interface';
 
 @Injectable()
 export class InstagramService {
@@ -186,6 +187,37 @@ export class InstagramService {
     );
 
     const resJson: IGAudienceOnlineFetch = await res?.json();
+    if (resJson?.error) {
+      throw new BadRequestException(resJson?.error?.message);
+    }
+
+    return resJson;
+  }
+
+  async getFollowerDemographics(userId: string, breakdown: string) {
+    if (!breakdown) {
+      throw new BadRequestException(
+        'required query breakdown: age, city, country, gender',
+      );
+    }
+
+    const resAccount = await this.accountService.getAccount(userId);
+    const accountId = resAccount?.accountId;
+    const accessToken = decryption(resAccount?.token);
+
+    if (!accountId) {
+      throw new BadRequestException('not found account connected');
+    }
+
+    // const res = await fetch(
+    //   `${process.env.META_URL}/${process.env.META_VERSION}/${accountId}/insights?metric=audience_city,audience_country,audience_gender_age&period=lifetime&access_token=${accessToken}`,
+    // );
+
+    const res = await fetch(
+      `${process.env.META_URL}/${process.env.META_VERSION}/${accountId}/insights?metric=follower_demographics&period=lifetime&timeframe=last_30_days&breakdown=${breakdown}&metric_type=total_value&access_token=${accessToken}`,
+    );
+
+    const resJson: IGAudienceDemographicsFetch = await res?.json();
     if (resJson?.error) {
       throw new BadRequestException(resJson?.error?.message);
     }
